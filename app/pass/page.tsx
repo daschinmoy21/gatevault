@@ -1,0 +1,140 @@
+"use client";
+
+import { QRCodeSVG } from "qrcode.react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function PassPage() {
+  const router = useRouter();
+
+  const data = {
+    date: "Apr 8",
+    from: "12:20",
+    to: "02:20",
+    qr: "gatepass-123",
+  };
+
+  // ⏳ TIMER (10 MIN)
+  const [timeLeft, setTimeLeft] = useState(600); // Set to 600 for 10 minutes
+  const [expired, setExpired] = useState(false);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setExpired(true);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+
+  return (
+    <div className="min-h-screen bg-[#f4f1ea] flex items-center justify-center">
+
+      {/* MOBILE FRAME */}
+      <div className="w-[390px] h-[844px] bg-[#f4f1ea] relative overflow-hidden rounded-[30px] shadow-2xl">
+
+        {/* 🔥 DARK HEADER */}
+        <div className="bg-gradient-to-r from-[#0f0f0f] via-[#1a1a1a] to-[#000000] h-[260px] px-6 pt-10 text-white rounded-b-[40px] relative">
+          <h1 className="text-2xl font-semibold">Gate-Pass</h1>
+          <div className="absolute top-0 right-0 w-24 h-20 bg-orange-500 rounded-bl-[60px]" />
+        </div>
+
+        {/* 🔥 ORANGE BACKGROUND */}
+        <div className="absolute bottom-0 w-full h-[40%] bg-gradient-to-r from-orange-400 to-orange-600 rounded-t-[60px]" />
+        <div className="absolute bottom-0 left-0 w-24 h-20 bg-orange-500 rounded-tr-[60px]" />
+
+        {/* 🔥 FLOATING CARD (Animation removed, card is now static) */}
+        <div className="absolute top-[140px] left-1/2 -translate-x-1/2 w-[310px] bg-white/80 backdrop-blur-md rounded-3xl p-5 shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
+
+          {/* STATUS */}
+          <div className="mb-2">
+            <span
+              className={`text-[10px] px-3 py-1 rounded-full text-white ${expired ? "bg-red-500" : "bg-green-500"
+                }`}
+            >
+              {expired ? "Expired" : "Active"}
+            </span>
+          </div>
+
+          {/* TOP ROW */}
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/set2.png"
+                alt="Kaziranga University"
+                width={36}
+                height={36}
+              />
+              <div className="text-xs font-semibold text-gray-700 leading-tight">
+                Kaziranga <br /> University
+              </div>
+            </div>
+
+            <p className="text-lg font-bold text-gray-700">
+              {data.date}
+            </p>
+          </div>
+
+          {/* TIME + RUNNER */}
+          <div className="flex justify-between items-center mb-4">
+
+            <div>
+              <p className="text-xs text-gray-400">Valid from</p>
+              <p className="text-lg font-bold">{data.from}</p>
+            </div>
+
+            {/* Emoji is kept here but movement and extra classes are removed */}
+            <div className="flex items-center justify-center w-16">
+              <span className="text-xl inline-block transform scale-x-[-1]">🏃🏽‍♂️</span>
+            </div>
+
+            <div>
+              <p className="text-xs text-gray-400">Valid to</p>
+              <p className="text-lg font-bold">{data.to}</p>
+            </div>
+
+          </div>
+
+          {/* 🔥 QR (DISAPPEARS AFTER EXPIRY) */}
+          <div className="flex justify-center mb-3 h-[170px] items-center">
+            {!expired && (
+              <div className="p-2 bg-white border rounded-xl">
+                <QRCodeSVG value={data.qr} size={150} />
+              </div>
+            )}
+          </div>
+
+          {/* ⏳ COUNTDOWN */}
+          <p className="text-sm text-center font-semibold mb-3">
+            {expired
+              ? "Pass Expired"
+              : `Expires in ${minutes}:${seconds
+                .toString()
+                .padStart(2, "0")}`}
+          </p>
+
+          <p className="text-[10px] text-gray-400 text-center mb-4">
+            NB: This QR is only for one-time use
+          </p>
+
+          {/* 🔥 CANCEL BUTTON */}
+          <button
+            onClick={() => router.replace("/dashboard")}
+            className="w-full bg-gradient-to-r from-orange-400 to-orange-600 text-white py-3 rounded-xl font-medium shadow-md hover:scale-105 active:scale-95 transition"
+          >
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}

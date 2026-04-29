@@ -1,0 +1,172 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { useState } from "react";
+import { Home, Settings, LogOut, Edit } from "lucide-react";
+
+export default function ProfilePage() {
+  const router = useRouter();
+
+  const [user, setUser] = useState({
+    name: "BHUPENDRA JOGI",
+    email: "bhupendrajogi@university.edu",
+    phone: "+91 9876543210",
+    semester: "6th",
+    section: "A",
+    hostel: "usa",
+    room: "203",
+    image: "/sukuna.webp",
+  });
+
+  // 🔥 IMAGE CHANGE HANDLER
+  const handleImageChange = (e: any) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      // ✅ SIZE LIMIT (150KB)
+      if (file.size > 150 * 1024) {
+        alert("Image too large! Max 150KB allowed.");
+        return;
+      }
+
+      const imageUrl = URL.createObjectURL(file);
+      setUser({ ...user, image: imageUrl });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f4f1ea] flex items-center justify-center">
+
+      {/* MOBILE FRAME */}
+      <div className="w-[390px] h-[844px] bg-[#f4f1ea] relative overflow-hidden rounded-[30px] shadow-2xl">
+
+        {/* 🔥 BACKGROUND */}
+        <div className="absolute bottom-[-100px] right-[-50px] w-[500px] h-[350px] bg-gradient-to-r from-orange-400 to-orange-600 rounded-tl-[200px]" />
+
+        {/* 🔥 MAIN CARD */}
+        <div className="absolute top-[18%] left-1/2 -translate-x-1/2 w-[320px] bg-white/80 backdrop-blur-md rounded-3xl p-5 shadow-[0_10px_40px_rgba(0,0,0,0.1)] animate-[slideUp_0.6s_ease, float_4s_ease-in-out_infinite]">
+
+          {/* TOP BLOB */}
+          <div className="absolute top-0 right-0 w-16 h-14 bg-orange-400 rounded-bl-[40px]" />
+
+          {/* TITLE */}
+          <h2 className="text-lg font-semibold text-gray-800 mt-2">
+            Profile
+          </h2>
+
+          {/* 👤 PROFILE IMAGE */}
+          <div className="flex justify-center mt-4">
+
+            <div className="relative w-[80px] h-[80px]">
+              <Image
+                src={user.image || "/set2.png"}
+                alt="profile"
+                fill
+                priority
+                className="rounded-full object-cover border-2 border-orange-400 shadow-md"
+              />
+
+              {/* ✏️ EDIT BUTTON */}
+              <label className="absolute bottom-0 right-0 bg-orange-500 p-1.5 rounded-full cursor-pointer shadow-md hover:scale-110 transition">
+                <Edit size={12} className="text-white" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+              </label>
+            </div>
+
+          </div>
+
+          {/* 🔥 USER INFO */}
+          <div className="text-center mt-3">
+  <p className="font-semibold text-gray-800">{user.name}</p>
+  <p className="text-xs text-gray-500">{user.email}</p>
+
+  {/* 📱 PHONE NUMBER */}
+  <p className="text-xs text-gray-500 mt-1">{user.phone}</p>
+</div>
+
+          {/* 🔥 DETAILS CARD */}
+          <div className="bg-gray-100 rounded-2xl p-4 mt-4 text-sm">
+
+            <div className="flex justify-between mb-2">
+              <span className="text-orange-500 text-xs">Semester</span>
+              <span className="font-semibold">{user.semester}</span>
+            </div>
+
+            <div className="flex justify-between mb-2">
+              <span className="text-orange-500 text-xs">Section</span>
+              <span className="font-semibold">{user.section}</span>
+            </div>
+
+            <div className="flex justify-between mb-2">
+              <span className="text-orange-500 text-xs">Hostel</span>
+              <span className="font-semibold">{user.hostel}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-orange-500 text-xs">Room</span>
+              <span className="font-semibold">{user.room}</span>
+            </div>
+
+          </div>
+
+          {/* 🔥 VIEW ACTIVITY */}
+          <div
+            onClick={() => router.push("/log")}
+            className="mt-4 bg-gradient-to-r from-orange-400 to-orange-600 text-white py-3 rounded-xl text-center font-medium cursor-pointer shadow-md hover:scale-105 active:scale-95 transition"
+          >
+            View Activity
+          </div>
+
+          {/* 🔥 LOGOUT */}
+          <div
+            onClick={() => router.push("/login")}
+            className="bg-gray-100 rounded-xl mt-4 py-4 flex flex-col items-center cursor-pointer"
+          >
+            <LogOut size={18} className="text-red-500" />
+            <p className="text-sm mt-1 text-red-500 font-medium">
+              Log out
+            </p>
+          </div>
+
+        </div>
+
+        {/* 🔥 NAVBAR */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[320px] bg-white/80 backdrop-blur-xl rounded-2xl flex justify-around py-3 shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+
+          {/* HOME */}
+          <div
+            onClick={() => router.push("/dashboard")}
+            className="flex flex-col items-center text-gray-400 hover:text-orange-500 cursor-pointer"
+          >
+            <Home size={22} className="mb-1" />
+            <p className="text-[10px]">Home</p>
+          </div>
+
+          {/* PROFILE ACTIVE */}
+          <div className="flex flex-col items-center text-orange-500 relative">
+            <div className="absolute -bottom-1 w-6 h-1 bg-orange-500 rounded-full"></div>
+            👤
+            <p className="text-[10px] font-medium">Profile</p>
+          </div>
+
+          {/* SETTINGS */}
+          <div
+            onClick={() => router.push("/settings")}
+            className="flex flex-col items-center text-gray-400 hover:text-orange-500 cursor-pointer"
+          >
+            <Settings size={22} className="mb-1" />
+            <p className="text-[10px]">Settings</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
