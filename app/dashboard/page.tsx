@@ -13,6 +13,7 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { usePasses } from "@/hooks/usePasses";
 import { Pass } from "@/types";
+import { PageSkeleton } from "@/components/LoadingSkeleton";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -20,11 +21,7 @@ export default function Dashboard() {
   const { passes, loading, error, refetch } = usePasses();
 
   if (status === "loading" || loading) {
-    return (
-      <div className="min-h-screen bg-[#e9edf5] flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   if (status === "unauthenticated") {
